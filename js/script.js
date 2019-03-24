@@ -34,6 +34,11 @@ window.addEventListener('mousemove',function(event){
   console.log(mouse);
 })
 
+//CREATE AN ARRAY TO PUSH CIRCLES INTO THAT WE WILL BE CREATING:
+var circlesArray = [];
+var numberOfCircles = rows * columns;
+
+
 
 //2.CREATE LINES FOR ROWS AND COLUMNS so you get illusion of seeing boxes
 //COORDINATES FOR SQUARES:
