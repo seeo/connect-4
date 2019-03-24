@@ -32,25 +32,43 @@ window.addEventListener('mousemove',function(event){
 c.fillStyle = '#fbca70'; //light orange color;
 c.fillRect((canvas.width - (square * columns))/ 2,(canvas.height - (square * rows)) / 2, square * columns, square * rows);
 //2.CREATE LINES FOR ROWS AND COLUMNS so you get illusion of seeing boxes
-c.beginPath();
+var x0y0_xCoordinate = ((canvas.width - (square * columns) )/ 2);
+var x0y0_yCoordinate = ((canvas.height - (square * rows)) / 2);
+console.log(x0y0_xCoordinate);
+console.log(x0y0_yCoordinate);
+
+//LINES FOR ROWS:
+for (i = 0; i < (rows+1); i++){ //'x' represents rows, we do a loop to draw horizontal lines here;
+  c.beginPath();
 //declare on the canvas where we want our path to start...
 //c.moveTo(x,y);
-c.strokeStyle = "#000000"; // black colored line;
+  c.strokeStyle = "#000000"; // black colored line;
 //c.moveTo(87.5,125);
 //first top line x-coordinate: (canvas.width - (square * columns) / 2)
 //first top line y-coordinate: (canvas.height - (square * rows) / 2) +square
-var x0y1_xCoordinate = ((canvas.width - (square * columns) )/ 2);
-var x0y1_yCoordinate = ((canvas.height - (square * rows)) / 2) + square;
-c.moveTo(x0y1_xCoordinate,x0y1_yCoordinate);
+  c.moveTo(x0y0_xCoordinate,(x0y0_yCoordinate)+(square * i));
 //c.lineTo(612.5,125);
 // end of the x0 line, x7_xCoordinate: (x0_xCoordinate + (square * columns));
 //end of the line x0 line, x7_yCoordinate: (x0_yCoordinate);
 
-c.lineTo((x0y1_xCoordinate + (square * columns)),(x0y1_yCoordinate));
+  c.lineTo((x0y0_xCoordinate + (square * columns)),(x0y0_yCoordinate) + (square * i));
 //c.lineTo((((canvas.width - (square * columns))/2) + square*columns),(((canvas.height - (square * rows)) / 2) + square));
+console.log("Horizontal lines being drawn!");
+  c.stroke();
+  console.log(c.stroke);
+}
 
-c.stroke();
-//end the drawing of the first line, and begin on the next horizontal line;
-c.beginPath();
+//LINES FOR COLUMNS:
+for (j = 0; j < (columns+1); j++){ //'j' represents columns, we do a loop to draw vertical lines here;
+  c.beginPath();
+  c.strokeStyle = "#000000";
+  c.moveTo((x0y0_xCoordinate)+(square * j),(x0y0_yCoordinate));
+  c.lineTo((x0y0_xCoordinate + (square * j)),(x0y0_yCoordinate) + (square * rows));
+  c.stroke();
+}
+
+
+
+
 //begin
 console.log("Javascript has ended!");
