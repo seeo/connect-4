@@ -7,6 +7,7 @@ canvas.height = 550;
 var square = 75; //length of one side of a square in pixels;
 var columns = 7; //number of columns so we know how many squares we need horizontally;
 var rows = 6; // number of rows so that we know how many squares we need vertically;
+var radius = 30
 
 //CREATED A MOUSE OBJECT to check my x- and y-coordinates when I mouse over stuff;
 var mouse = {
@@ -29,46 +30,59 @@ window.addEventListener('mousemove',function(event){
 
 //CREATING THE EMPTY STATE BOARD...
 //1. CREATE A BOARD WITH A BACKGROUND
-c.fillStyle = '#fbca70'; //light orange color;
-c.fillRect((canvas.width - (square * columns))/ 2,(canvas.height - (square * rows)) / 2, square * columns, square * rows);
+
 //2.CREATE LINES FOR ROWS AND COLUMNS so you get illusion of seeing boxes
 var x0y0_xCoordinate = ((canvas.width - (square * columns) )/ 2);
 var x0y0_yCoordinate = ((canvas.height - (square * rows)) / 2);
 console.log(x0y0_xCoordinate);
 console.log(x0y0_yCoordinate);
 
+function originBoard(){
+  c.fillStyle = '#fbca70'; //light orange color;
+  c.fillRect((canvas.width - (square * columns))/ 2,(canvas.height - (square * rows)) / 2, square * columns, square * rows);
 //LINES FOR ROWS:
-for (i = 0; i < (rows+1); i++){ //'x' represents rows, we do a loop to draw horizontal lines here;
-  c.beginPath();
+  for (i = 0; i < (rows+1); i++){ //'x' represents rows, we do a loop to draw horizontal lines here;
+    c.beginPath();
 //declare on the canvas where we want our path to start...
 //c.moveTo(x,y);
-  c.strokeStyle = "#000000"; // black colored line;
+    c.strokeStyle = "#000000"; // black colored line;
 //c.moveTo(87.5,125);
 //first top line x-coordinate: (canvas.width - (square * columns) / 2)
 //first top line y-coordinate: (canvas.height - (square * rows) / 2) +square
-  c.moveTo(x0y0_xCoordinate,(x0y0_yCoordinate)+(square * i));
+    c.moveTo(x0y0_xCoordinate,(x0y0_yCoordinate)+(square * i));
 //c.lineTo(612.5,125);
 // end of the x0 line, x7_xCoordinate: (x0_xCoordinate + (square * columns));
 //end of the line x0 line, x7_yCoordinate: (x0_yCoordinate);
 
-  c.lineTo((x0y0_xCoordinate + (square * columns)),(x0y0_yCoordinate) + (square * i));
+    c.lineTo((x0y0_xCoordinate + (square * columns)),(x0y0_yCoordinate) + (square * i));
 //c.lineTo((((canvas.width - (square * columns))/2) + square*columns),(((canvas.height - (square * rows)) / 2) + square));
-console.log("Horizontal lines being drawn!");
-  c.stroke();
-  console.log(c.stroke);
-}
-
+    console.log("Horizontal lines being drawn!");
+    c.stroke();
+    console.log(c.stroke);
+  }
 //LINES FOR COLUMNS:
-for (j = 0; j < (columns+1); j++){ //'j' represents columns, we do a loop to draw vertical lines here;
-  c.beginPath();
-  c.strokeStyle = "#000000";
-  c.moveTo((x0y0_xCoordinate)+(square * j),(x0y0_yCoordinate));
-  c.lineTo((x0y0_xCoordinate + (square * j)),(x0y0_yCoordinate) + (square * rows));
-  c.stroke();
+  for (j = 0; j < (columns+1); j++){ //'j' represents columns, we do a loop to draw vertical lines here;
+    c.beginPath();
+    c.strokeStyle = "#000000";
+    c.moveTo((x0y0_xCoordinate)+(square * j),(x0y0_yCoordinate));
+    c.lineTo((x0y0_xCoordinate + (square * j)),(x0y0_yCoordinate) + (square * rows));
+    c.stroke();
+  }
 }
 
+originBoard();
+
+//DRAW 'EMPTY' CIRCLES WITHIN THE SQUARES:
+var x0y0_xCircle = x0y0_xCoordinate + (square/2);
+var x0y0_yCircle = x0y0_yCoordinate + (square/2);
+console.log(x0y0_xCoordinate);
+console.log(x0y0_yCoordinate);
 
 
+c.beginPath();
+c.arc(x0y0_xCircle,x0y0_yCircle,radius,0*Math.PI,2*Math.PI);
+c.fillStyle = '#eee';
+c.fill();
 
 //begin
 console.log("Javascript has ended!");
