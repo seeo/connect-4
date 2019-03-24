@@ -32,8 +32,15 @@ window.addEventListener('mousemove',function(event){
 //1. CREATE A BOARD WITH A BACKGROUND
 
 //2.CREATE LINES FOR ROWS AND COLUMNS so you get illusion of seeing boxes
+//COORDINATES FOR SQUARES:
 var x0y0_xCoordinate = ((canvas.width - (square * columns) )/ 2);
 var x0y0_yCoordinate = ((canvas.height - (square * rows)) / 2);
+console.log(x0y0_xCoordinate);
+console.log(x0y0_yCoordinate);
+
+//COORDINATES FOR CIRCLES:
+var x0y0_xCircle = x0y0_xCoordinate + (square/2);
+var x0y0_yCircle = x0y0_yCoordinate + (square/2);
 console.log(x0y0_xCoordinate);
 console.log(x0y0_yCoordinate);
 
@@ -53,7 +60,6 @@ function originBoard(){
 //c.lineTo(612.5,125);
 // end of the x0 line, x7_xCoordinate: (x0_xCoordinate + (square * columns));
 //end of the line x0 line, x7_yCoordinate: (x0_yCoordinate);
-
     c.lineTo((x0y0_xCoordinate + (square * columns)),(x0y0_yCoordinate) + (square * i));
 //c.lineTo((((canvas.width - (square * columns))/2) + square*columns),(((canvas.height - (square * rows)) / 2) + square));
     console.log("Horizontal lines being drawn!");
@@ -68,21 +74,28 @@ function originBoard(){
     c.lineTo((x0y0_xCoordinate + (square * j)),(x0y0_yCoordinate) + (square * rows));
     c.stroke();
   }
+  //DRAW 'EMPTY' CIRCLES WITHIN THE SQUARES:
+  //ADDING ROW and COLUMN OF CIRCLES:
+  for (j = 0; j < rows; j++){
+    x0y0_yCircle = x0y0_yCoordinate + (square/2);
+    x0y0_yCircle += (square * j);
+    console.log(x0y0_yCircle);
+    console.log("Rows of circles are being drawn");
+  for (i= 0; i < columns; i++){
+    c.beginPath();
+    c.arc((x0y0_xCircle+(square * i)),(x0y0_yCircle),radius,0*Math.PI,2*Math.PI);
+    c.fillStyle = '#eee';
+    c.fill();
+    }
+  }
 }
 
 originBoard();
 
-//DRAW 'EMPTY' CIRCLES WITHIN THE SQUARES:
-var x0y0_xCircle = x0y0_xCoordinate + (square/2);
-var x0y0_yCircle = x0y0_yCoordinate + (square/2);
+
+
 console.log(x0y0_xCoordinate);
 console.log(x0y0_yCoordinate);
-
-
-c.beginPath();
-c.arc(x0y0_xCircle,x0y0_yCircle,radius,0*Math.PI,2*Math.PI);
-c.fillStyle = '#eee';
-c.fill();
-
-//begin
+console.log(x0y0_xCircle);
+console.log(x0y0_yCircle);
 console.log("Javascript has ended!");
