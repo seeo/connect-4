@@ -16,8 +16,8 @@ var canvas = document.querySelector("#myCanvas");
 var c = canvas.getContext('2d');
 //CREATING THE EMPTY STATE BOARD...
 //1. CREATE A BOARD WITH A BACKGROUND
-canvas.width = 700;
-canvas.height = 550;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 var square = 75; //length of one side of a square in pixels;
 var columns = 7; //number of columns so we know how many squares we need horizontally;
 var rows = 6; // number of rows so that we know how many squares we need vertically;
@@ -42,7 +42,7 @@ var numberOfCircles = rows * columns;
 
 //2.CREATE LINES FOR ROWS AND COLUMNS so you get illusion of seeing boxes
 //COORDINATES FOR SQUARES:
-var x0y0_xCoordinate = ((canvas.width - (square * columns) )/ 2);
+var x0y0_xCoordinate = ((canvas.width - (square * columns))/ 2);
 var x0y0_yCoordinate = (((canvas.height - (square * rows)) / 2)+(square *rows));
 console.log(x0y0_xCoordinate);
 console.log(x0y0_yCoordinate);
@@ -73,7 +73,6 @@ function originBoard(){
 //c.lineTo((((canvas.width - (square * columns))/2) + square*columns),(((canvas.height - (square * rows)) / 2) + square));
     console.log("Horizontal lines being drawn!");
     c.stroke();
-    console.log(c.stroke);
   }
 //LINES FOR COLUMNS:
   for (j = 0; j < (columns+1); j++){ //'j' represents columns, we do a loop to draw vertical lines here;
@@ -85,18 +84,60 @@ function originBoard(){
   }
 //3. DRAW 'EMPTY' CIRCLES WITHIN THE SQUARES:
   //ADDING ROW and COLUMN OF CIRCLES:
-  for (j = 0; j < rows; j++){
-    x0y0_yCircle = x0y0_yCoordinate - (square/2);
-    x0y0_yCircle -= (square * j);
-    console.log(x0y0_yCircle);
-    console.log("Rows of circles are being drawn");
+  // for (j = 0; j < rows; j++){
+  //   x0y0_yCircle = x0y0_yCoordinate - (square/2);
+  //   x0y0_yCircle -= (square * j);
+  //   console.log(x0y0_yCircle);
+  //   console.log("Rows of circles are being drawn");
+
   for (i= 0; i < columns; i++){
+    circlesArray[i]=[];
+      for (j=0; j < rows; j++){
     c.beginPath();
-    c.arc((x0y0_xCircle+(square * i)),(x0y0_yCircle),radius,0*Math.PI,2*Math.PI);
+    // circlesArray[i] =
+    c.arc((x0y0_xCircle+(square * i)),(x0y0_yCircle) - (square * j),radius,0*Math.PI,2*Math.PI);
+    circlesArray[i][j]=0;
     c.fillStyle = '#eee';
     c.fill();
+      }
     }
-  }
+    console.log(circlesArray);
+  // for (i = 0; i < columns; i++){
+  //   c.beginPath();
+  //   c.arc((x0y0_xCircle+(square * i)),(x0y0_yCircle) - (square * 1),radius,0*Math.PI,2*Math.PI);
+  //   c.fillStyle = '#eee';
+  //   c.fill();
+  // }
+  //
+  // for (i = 0; i < columns; i++){
+  //   c.beginPath();
+  //   c.arc((x0y0_xCircle+(square * i)),(x0y0_yCircle) - (square * 2),radius,0*Math.PI,2*Math.PI);
+  //   c.fillStyle = '#eee';
+  //   c.fill();
+  // }
+  //
+  // for (i = 0; i < columns; i++){
+  //   c.beginPath();
+  //   c.arc((x0y0_xCircle+(square * i)),(x0y0_yCircle) - (square * 3),radius,0*Math.PI,2*Math.PI);
+  //   c.fillStyle = '#eee';
+  //   c.fill();
+  // }
+  //
+  // for (i = 0; i < columns; i++){
+  //   c.beginPath();
+  //   c.arc((x0y0_xCircle+(square * i)),(x0y0_yCircle) - (square * 4),radius,0*Math.PI,2*Math.PI);
+  //   c.fillStyle = '#eee';
+  //   c.fill();
+  // }
+  //
+  // for (i = 0; i < columns; i++){
+  //   c.beginPath();
+  //   c.arc((x0y0_xCircle+(square * i)),(x0y0_yCircle) - (square * 5),radius,0*Math.PI,2*Math.PI);
+  //   c.fillStyle = '#eee';
+  //   c.fill();
+  // }
+
+  // }
 }
 //4. CALL THE ORIGINAL BOARD FUNCTION HERE:
 originBoard();
