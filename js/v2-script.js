@@ -6,6 +6,10 @@ var context = canvas.getContext("2d");
 //set up dimensions of canvas on our page:
 var height;
 var width;
+
+//colors to be used in the connect-4 game:
+const color_background = "#eee"
+
 setDimensions(); //will create the dimensions of the canvas later to explicitly take up the height and width of the browser
 // coding the event listener here, for resizing of canvas
 window.addEventListener("resize", setDimensions);
@@ -22,10 +26,23 @@ function loop (timeNow){
   }
   //calculate the time difference in seconds;
   timeDelta = (timeNow - timeLast)/1000; //since computer uses milliseconds by default;
+  timeLast = timeNow;
+  //update
+
+  //draw
+  drawBackground();
+
+  //call the next frame
+  requestAnimationFrame(loop);
 }
 
 function createGrid(){
 
+}
+
+function drawBackground(){
+  context.fillStyle = color_background; //background of the connect 4 board;
+  context.fillRect(0,0,width,height); //draws a rectangle from x-y coordinates of zer0-zer0; i.e. the top left corner of window.
 }
 
 function newGame(){ //whenever, setDimensions is called, newGame is created, and createGrid will be called.

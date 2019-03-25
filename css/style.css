@@ -1,6 +1,9 @@
+body{
+  margin: 0;
+  overflow: hidden;  
+}
 
 canvas{
-  background: #eee;
   border: 1px solid black;
   display: block;
   margin: 0 auto; /*we set margin to have auto so that the canvas will be in the center */
