@@ -27,9 +27,9 @@ const MARGIN = 0.02 // margin as a fraction of the shortest screen dimension.
 //classes here, for Cell, declared at the global scope:
 class Cell{ //a class is an idea of a template that can be used to create multiple Objects with the same data and fuctions.
   //in this case, we are going to create cells over and over again. And each cell shall be an Object.
-  constructor(left, top, w, h,row, col){// to create a class, we need to use Javascript's constructor function
+  constructor(left,top,w,h,row,col){// to create a class, we need to use Javascript's constructor function
 //the parameters used in the constructor function of the Cell class is consistent with the parameters we used to declare the Cell class in the double-for loop.
-    this.bot = top + h; //bottom pixel position of 'this' cell is the sum of top position and height of cell;
+    this.bottom = top + h; //bottom pixel position of 'this' cell is the sum of top position and height of cell;
     this.left = left;
     this.right = left + w;
     this.top = top;
@@ -40,7 +40,13 @@ class Cell{ //a class is an idea of a template that can be used to create multip
     this.centerX = left + w / 2; //center X coordinate of circle
     this.centerY = top + h / 2; // center Y coordinate of circle
     this.r = w * GRID_CIRCLE / 2; // radius of circle, is a fraction of the cell width
+    this.highlight = null;
     this.owner = null; // when true -> player; when false -> computer
+
+  }
+  //create this contains method so that we can use it for our highlightCell later below
+  contains(x,y){ // need to look up documentation on what this does.
+    return x>this.left && x <this.right && y > this.top && y <this.bottom;
   }
   //draw circle:
   draw(context){
@@ -60,14 +66,35 @@ class Cell{ //a class is an idea of a template that can be used to create multip
     context.beginPath();
     context.arc(this.centerX, this.centerY, this.r, 0, Math.PI * 2);
     context.fill()
+
+    //draw highlighting;
+    if (this.highlight != null){
+      // if(this.highlight){
+      //   color = COLOR_PLAY;
+      // }else{
+      //   color = COLOR_COMP;
+      // }
+      color = this.highlight ? COLOR_PLAY : COLOR_COMP;
+
+    //draw circular highlights
+    context.lineWidth = this.r / 4;
+    context.strokeStyle = color;
+    context.beginPath();
+    context.arc(this.centerX, this.centerY, this.r, 0, Math.PI * 2);
+    context.stroke();
+    }
   }
 }
 
 //game variables here:
 var grid = []; //empty array for now;
+var gameOver;
+var playersTurn;
 
 setDimensions(); //will create the dimensions of the canvas later to explicitly take up the height and width of the browser
 // coding the event listener here, for resizing of canvas
+canvas.addEventListener("mousemove", highlightBoard);
+canvas.addEventListener("click",click);
 window.addEventListener("resize", setDimensions);
 
 //create game loop so that createBoard will be able to do something later on
@@ -92,6 +119,23 @@ function loop (timeNow){
   requestAnimationFrame(loop);
 }
 
+function checkWin(row, col){
+  //come back later to do checkwin conditional
+  return false; //for now...
+}
+
+function click(event){
+  if (gameOver){
+    newGame();
+    return;
+  }
+  if(!playersTurn){
+    return; //if not player's turn, player should not be able to click...
+  }
+  selectCell();
+
+}
+
 //create grid (aka board) based on portrait or landscape mode...
 function createBoard(){
   grid = [];//initialise our grid;
@@ -102,7 +146,7 @@ function createBoard(){
   //for portrait mode, to detect:
     if(width - (margin * 2) * GRID_ROWS / GRID_COLS < height - (margin*2)){
       //we are in portrait mode;
-      cell = (width -(margin * 2))/GRID_COLS; //this gives the pixel length of a cell, and this cell will be a square of equal sides.
+      cell = (width - (margin * 2))/GRID_COLS; //this gives the pixel length of a cell, and this cell will be a square of equal sides.
       marginX = margin;
       marginY = (height - cell * GRID_ROWS) / 2;
     }
@@ -154,13 +198,74 @@ function drawBoard(){
       cell.draw(context);
     }
   }
+}
+//There are only seven options in a connect-4 game, since there are only seven columns.
+function highlightCell(x,y){
+  let col = null; //only max seven options, so can only highlight max seven circles at anytime
+  for (let row of grid){
+    for (let cell of row){
+
+      //clear existing highlighting first
+      cell.highlight = null;
+
+      //get the column;
+      if (cell.contains(x,y)){
+        col = cell.col;
+      }
+    }
+  }
+  if (col == null){
+    return;
+  }
+  //highlight the first unoccupied circle (we shall loop through the rows backwards)
+  for (let i = GRID_ROWS -1; i >= 0; i--){;
+    if(grid[i][col].owner == null){
+        grid[i][col].highlight = playersTurn;
+        return grid[i][col];
+    }
+  }
+  return null;
+}
+
+function highlightBoard(/** @type {MouseEvent} */event){
+  if(!playersTurn || gameOver){
+    return; //don't show highlight anything;
+  }
+    highlightCell(event.clientX, event.clientY); // TODO need to read documentation for this.
+
 
 }
 
 function newGame(){ //whenever, setDimensions is called, newGame is created, and createBoard will be called.
+  playersTurn = Math.random() < 0.5;
+  gameOver = false;
   createBoard();
 }
 
+function selectCell(){
+  let highlighting = false;
+  OUTER: for (let row of grid){
+    for (let cell of row){
+      if (cell.highlight != null){
+        highlighting = true;
+        cell.highlight = null;
+        cell.owner = playersTurn;
+        if(checkWin(cell.row, cell.col)){
+          gameOver = true;
+        }
+        break OUTER; //need to read up documentation on this....
+      }
+    }
+  }
+  //Don't allow selection if no highlighting:
+  if(!highlighting){
+    return;
+  }
+  //continue playing if the game is not overflow / switch players
+  if(!gameOver){
+    playersTurn = !playersTurn;
+  }
+}
 
 function setDimensions(){ //function declared at the parse-time, so we can call the setDimensions anywhere on this script
   height = window.innerHeight;
