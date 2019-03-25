@@ -34,6 +34,13 @@ window.addEventListener('mousemove',function(event){
   console.log(mouse);
 })
 
+window.addEventListener('resize',function(event){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  //to ensure that the board continues to be centered when the window gets re-sized...
+  originBoard();
+});
+
 //CREATE AN ARRAY TO PUSH CIRCLES INTO THAT WE WILL BE CREATING:
 var circlesArray = [];
 var numberOfCircles = rows * columns;
@@ -42,18 +49,27 @@ var numberOfCircles = rows * columns;
 
 //2.CREATE LINES FOR ROWS AND COLUMNS so you get illusion of seeing boxes
 //COORDINATES FOR SQUARES:
-var x0y0_xCoordinate = ((canvas.width - (square * columns))/ 2);
-var x0y0_yCoordinate = (((canvas.height - (square * rows)) / 2)+(square *rows));
-console.log(x0y0_xCoordinate);
-console.log(x0y0_yCoordinate);
+var x0y0_xCoordinate;
+var x0y0_yCoordinate;
+var x0y0_xCircle;
+var x0y0_yCircle;
 
+function genOriginCoordinates(){
+  x0y0_xCoordinate = ((canvas.width - (square * columns))/ 2);
+  x0y0_yCoordinate = (((canvas.height - (square * rows)) / 2)+(square *rows));
+  console.log(x0y0_xCoordinate);
+  console.log(x0y0_yCoordinate);
 //COORDINATES FOR CIRCLES:
-var x0y0_xCircle = x0y0_xCoordinate + (square/2);
-var x0y0_yCircle = x0y0_yCoordinate - (square/2);
-console.log(x0y0_xCoordinate);
-console.log(x0y0_yCoordinate);
+  x0y0_xCircle = x0y0_xCoordinate + (square/2);
+  x0y0_yCircle = x0y0_yCoordinate - (square/2);
+  console.log(x0y0_xCoordinate);
+  console.log(x0y0_yCoordinate);
+}
+
+//FUNCTION FOR CREATING ORIGINAL BOARD HERE:
 
 function originBoard(){
+  genOriginCoordinates();
   c.fillStyle = '#fbca70'; //light orange color;
   c.fillRect((canvas.width - (square * columns))/ 2,(canvas.height - (square * rows)) / 2, square * columns, square * rows);
 //LINES FOR ROWS:
