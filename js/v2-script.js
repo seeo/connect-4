@@ -7,8 +7,16 @@ var context = canvas.getContext("2d");
 var height;
 var width;
 
-//colors to be used in the connect-4 game:
-const color_background = "#eee"
+//setting color of board, grid, circles, players' tokens (And experimenting with 'constants')
+const COLOR_BACKGROUND = "#eee" //this is grey.
+const COLOR_BOARD =  '#fbca70'; //light orange color;
+//'constant' are variables that will never be re-assigned in future coding. By convention, MDN recommends constants be ALL CAPS.
+
+//game parameters;
+const GRID_CIRCLE = 0.7; //circle within the grids (aka squares) as a fraction of cell size;
+const GRID_COLS = 7; //number of game columns;
+const GRID_ROWS = 6; //number of game rows;
+const MARGIN = 0.1 // margin as a fraction of the shortest screen dimension.
 
 setDimensions(); //will create the dimensions of the canvas later to explicitly take up the height and width of the browser
 // coding the event listener here, for resizing of canvas
@@ -41,7 +49,7 @@ function createGrid(){
 }
 
 function drawBackground(){
-  context.fillStyle = color_background; //background of the connect 4 board;
+  context.fillStyle = COLOR_BACKGROUND; //background of the connect 4 board;
   context.fillRect(0,0,width,height); //draws a rectangle from x-y coordinates of zer0-zer0; i.e. the top left corner of window.
 }
 
