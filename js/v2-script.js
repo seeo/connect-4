@@ -22,7 +22,7 @@ const COLOR_PLAY_DARK = "#05058c"; //this is dark blue
 const GRID_CIRCLE = 0.7; //circle within the grids (aka squares) as a fraction of cell size;
 const GRID_COLS = 7; //number of game columns;
 const GRID_ROWS = 6; //number of game rows;
-const MARGIN = 0.05 // margin as a fraction of the shortest screen dimension.
+const MARGIN = 0.02 // margin as a fraction of the shortest screen dimension.
 
 //classes here, for Cell, declared at the global scope:
 class Cell{ //a class is an idea of a template that can be used to create multiple Objects with the same data and fuctions.
@@ -54,7 +54,7 @@ class Cell{ //a class is an idea of a template that can be used to create multip
     // }else{
     //   color = COLOR_COMP;
     // }
-    let color = this.owner == null ? COLOR_BACKGROUND : this.owner ? : COLOR_PLAY : COLOR_COMP;
+    let color = this.owner == null ? COLOR_BACKGROUND : this.owner ? COLOR_PLAY : COLOR_COMP;
     //draw the circle:
     context.fillStyle = color;
     context.beginPath();
@@ -70,7 +70,7 @@ setDimensions(); //will create the dimensions of the canvas later to explicitly 
 // coding the event listener here, for resizing of canvas
 window.addEventListener("resize", setDimensions);
 
-//create game loop so that createGrid will be able to do something later on
+//create game loop so that createBoard will be able to do something later on
 var timeDelta; //to keep track of the time , i.e. time between frames;
 var timeLast; // and to keep track of the last frame time;
 requestAnimationFrame(loop);
@@ -87,13 +87,13 @@ function loop (timeNow){
 
   //draw
   drawBackground();
-  drawGrid();
+  drawBoard();
   //call the next frame
   requestAnimationFrame(loop);
 }
 
 //create grid (aka board) based on portrait or landscape mode...
-function createGrid(){
+function createBoard(){
   grid = [];//initialise our grid;
   //set up cell size and margins (experimenting with 'let' variables. They can be re-assigned)
   let cell;
@@ -116,7 +116,7 @@ function createGrid(){
     //populate the board now with cells
     for (i = 0; i < GRID_ROWS; i++){
       grid[i] = []; //the array that captures the first row shall at first be empty;
-      for (j = 0;j < GRID_COLS; j++){ // below we calculate the position for each of the cells:
+      for (j = 0; j < GRID_COLS; j++){ // below we calculate the position for each of the cells:
         let left = marginX + j * cell; //pixel position of the left side of each cell;
         let top = marginY + i * cell; //pixel position of the top side of each cell;
         // we will need to create a new Cell class that has the following properties:
@@ -143,10 +143,22 @@ function drawBoard(){
   let cell = grid [0][0]; // the top left;
   let boardHeight = cell.h * GRID_ROWS;
   let boardWidth = cell.w * GRID_COLS;
+  context.fillStyle = COLOR_BOARD;
+  context.fillRect(cell.left, cell.top, boardWidth, boardHeight);
+  context.fillStyle = COLOR_BOARD_BOTTOM;
+  context.fillRect(cell.left - (margin/2),cell.top + boardHeight - (margin/2), boardWidth + margin, margin);
+
+  //draw the circles Now:
+  for (row of grid){
+    for (cell of row){
+      cell.draw(context);
+    }
+  }
+
 }
 
-function newGame(){ //whenever, setDimensions is called, newGame is created, and createGrid will be called.
-  createGrid();
+function newGame(){ //whenever, setDimensions is called, newGame is created, and createBoard will be called.
+  createBoard();
 }
 
 

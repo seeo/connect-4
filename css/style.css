@@ -1,6 +1,6 @@
 body{
   margin: 0;
-  overflow: hidden; /* this removes the scroll bar, unfortunately, the replay button has disappeared */  
+  overflow: hidden; /* this removes the scroll bar, unfortunately, the replay button has disappeared */
 }
 
 canvas{
