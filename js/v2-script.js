@@ -1,12 +1,5 @@
+"use strict"; //trying to debug.. strict mode: we cannot use undeclared variables.
 console.log("Javascript is linked!");
-
-//created canvas and gave it a context of '2-dimensions':
-var canvas = document.querySelector("#myCanvas");
-var context = canvas.getContext("2d");
-//set up dimensions of canvas on our page:
-var height;
-var width;
-var margin;
 
 //setting color of board, grid, circles, players' tokens (And experimenting with 'constants')
 const COLOR_BACKGROUND = "#eee"; //this is grey for the canvas.
@@ -19,7 +12,7 @@ const COLOR_PLAY_DARK = "#05058c"; //this is dark blue
 //'constant' are variables that will never be re-assigned in future coding. By convention, MDN recommends constants be ALL CAPS.
 
 //game parameters;
-const GRID_CIRCLE = 0.7; //circle within the grids (aka squares) as a fraction of cell size;
+const GRID_CIRCLE = 0.7; //circle diameter within the grids (aka squares) as a fraction of cell length;
 const GRID_COLS = 7; //number of game columns;
 const GRID_ROWS = 6; //number of game rows;
 const MARGIN = 0.02 // margin as a fraction of the shortest screen dimension.
@@ -39,19 +32,17 @@ class Cell{ //a class is an idea of a template that can be used to create multip
     this.col = col;
     this.centerX = left + w / 2; //center X coordinate of circle
     this.centerY = top + h / 2; // center Y coordinate of circle
-    this.r = w * GRID_CIRCLE / 2; // radius of circle, is a fraction of the cell width
-    this.highlight = null;
+    this.r = w * GRID_CIRCLE / 2; // diameter of circle is a fraction of the cell width, radius is half of diameter;
+    this.highlight = null; //all circles begin with no highlight, until cursor moves to cell, then highlightCell function event listener activates;
     this.owner = null; // when true -> player; when false -> computer
-
   }
   //create this contains method so that we can use it for our highlightCell later below
-  contains(x,y){ // need to look up documentation on what this does.
-    return x>this.left && x <this.right && y > this.top && y <this.bottom;
+  contains(x, y){
+    return x > this.left && x <this.right && y > this.top && y <this.bottom;
   }
   //draw circle:
   draw(context){
-
-    //owner color;
+    //OWNER COLOR;
     // let color;
     // if(this.owner == null){
     //   color = COLOR_BACKGROUND;
@@ -60,41 +51,58 @@ class Cell{ //a class is an idea of a template that can be used to create multip
     // }else{
     //   color = COLOR_COMP;
     // }
+    // above is the if, else statment to check owner color; below is the tenary operator version:
     let color = this.owner == null ? COLOR_BACKGROUND : this.owner ? COLOR_PLAY : COLOR_COMP;
-    //draw the circle:
+    //if there is no owner, then the color of cell is the background color, which is the canvas color;
+    //else if the this.owner is true, then color of cell is the player's color;
+    //else the color of the cell is the computer's color;
+
+    //DRAW THE CIRCLE:
+    //console.log("Begin drawing circle");
     context.fillStyle = color;
     context.beginPath();
     context.arc(this.centerX, this.centerY, this.r, 0, Math.PI * 2);
     context.fill()
+    //console.log("End drawing of circle");
 
-    //draw highlighting;
+    //DRAW HIGHLIGHTING:
     if (this.highlight != null){
+  // the above means: if highlighting of the cell is empty:
       // if(this.highlight){
       //   color = COLOR_PLAY;
       // }else{
       //   color = COLOR_COMP;
       // }
-      color = this.highlight ? COLOR_PLAY : COLOR_COMP;
-
-    //draw circular highlights
-    context.lineWidth = this.r / 4;
+    console.log("Begin drawing of highlighting");
+    color = this.highlight ? COLOR_PLAY : COLOR_COMP;
+    //DRAW HIGHLIGHTING AROUND THE CIRCLE:
+    context.lineWidth = (this.r / 4); //this determines how bold the highlight around the circle will be....
     context.strokeStyle = color;
     context.beginPath();
     context.arc(this.centerX, this.centerY, this.r, 0, Math.PI * 2);
     context.stroke();
+    console.log("End drawing of highlighting");
     }
   }
 }
 
+//created canvas and gave it a context of '2-dimensions':
+var canvas = document.querySelector("#myCanvas");
+var context = canvas.getContext("2d");
+//set up dimensions of canvas on our page:
+var height;
+var width;
+var margin;
+
 //game variables here:
 var grid = []; //empty array for now;
-var gameOver;
-var playersTurn;
-
+var gameOver = new Boolean();
+var playersTurn = new Boolean(); //this can return either true or false based on newGame function that randomly chooses who gets to go first.
 setDimensions(); //will create the dimensions of the canvas later to explicitly take up the height and width of the browser
-// coding the event listener here, for resizing of canvas
+
+//Event listeners here, for resizing of canvas
+canvas.addEventListener("click", click);
 canvas.addEventListener("mousemove", highlightBoard);
-canvas.addEventListener("click",click);
 window.addEventListener("resize", setDimensions);
 
 //create game loop so that createBoard will be able to do something later on
@@ -125,15 +133,14 @@ function checkWin(row, col){
 }
 
 function click(event){
-  if (gameOver){
+  if (gameOver == true){
     newGame();
     return;
   }
-  if(!playersTurn){
-    return; //if not player's turn, player should not be able to click...
+  if(playersTurn == false){
+    //if not player's turn, player should not be able to click...
   }
   selectCell();
-
 }
 
 //create grid (aka board) based on portrait or landscape mode...
@@ -158,9 +165,9 @@ function createBoard(){
       //we are in landscape mode;
     }
     //populate the board now with cells
-    for (i = 0; i < GRID_ROWS; i++){
+    for (let i = 0; i < GRID_ROWS; i++){
       grid[i] = []; //the array that captures the first row shall at first be empty;
-      for (j = 0; j < GRID_COLS; j++){ // below we calculate the position for each of the cells:
+      for (let j = 0; j < GRID_COLS; j++){ // below we calculate the position for each of the cells:
         let left = marginX + j * cell; //pixel position of the left side of each cell;
         let top = marginY + i * cell; //pixel position of the top side of each cell;
         // we will need to create a new Cell class that has the following properties:
@@ -193,23 +200,19 @@ function drawBoard(){
   context.fillRect(cell.left - (margin/2),cell.top + boardHeight - (margin/2), boardWidth + margin, margin);
 
   //draw the circles Now:
-  for (row of grid){
-    for (cell of row){
+  for (let row of grid){
+    for (let cell of row){
       cell.draw(context);
     }
   }
 }
 //There are only seven options in a connect-4 game, since there are only seven columns.
-function highlightCell(x,y){
+function highlightCell(x, y){
   let col = null; //only max seven options, so can only highlight max seven circles at anytime
   for (let row of grid){
     for (let cell of row){
-
-      //clear existing highlighting first
-      cell.highlight = null;
-
-      //get the column;
-      if (cell.contains(x,y)){
+      cell.highlight = null; //clear existing highlightings first
+      if (cell.contains(x, y)){  //get the column;
         col = cell.col;
       }
     }
@@ -218,8 +221,8 @@ function highlightCell(x,y){
     return;
   }
   //highlight the first unoccupied circle (we shall loop through the rows backwards)
-  for (let i = GRID_ROWS -1; i >= 0; i--){;
-    if(grid[i][col].owner == null){
+  for (let i = GRID_ROWS - 1; i >= 0; i--){; //there are six rows, but the array.length is six + 1;
+    if(grid[i][col].owner == null){ //grid[0][1], is cell of top row, second column from the left;
         grid[i][col].highlight = playersTurn;
         return grid[i][col];
     }
@@ -227,43 +230,46 @@ function highlightCell(x,y){
   return null;
 }
 
-function highlightBoard(/** @type {MouseEvent} */event){
-  if(!playersTurn || gameOver){
-    return; //don't show highlight anything;
+function highlightBoard(event){
+  if(!playersTurn || gameOver){ // TODO : later we just want to make sure that human player cannot hijack computer's turn
+    // return; //don't show any highlight if not player's turn or if the game is over;
   }
-    highlightCell(event.clientX, event.clientY); // TODO need to read documentation for this.
-
-
+    //console.log("the highlight cell function has been called");
+    highlightCell(event.clientX, event.clientY); // TO DO need to read documentation for this.
+    //console.log("the highlight cell function has ended calling");
 }
 
 function newGame(){ //whenever, setDimensions is called, newGame is created, and createBoard will be called.
-  playersTurn = Math.random() < 0.5;
+  playersTurn = Math.random() < 0.5; //randomise who beings first
   gameOver = false;
   createBoard();
 }
 
 function selectCell(){
   let highlighting = false;
-  OUTER: for (let row of grid){
-    for (let cell of row){
-      if (cell.highlight != null){
+  OUTER: for (let row of grid) {
+    for (let cell of row) {
+      if (cell.highlight != null) {
         highlighting = true;
         cell.highlight = null;
+        console.log("just before grid[i][j] cell.owner property is assigned to players turn; which will return a color");
         cell.owner = playersTurn;
+        console.log("just after cell.owner got re-assigned");
         if(checkWin(cell.row, cell.col)){
-          gameOver = true;
+            gameOver = true;
         }
-        break OUTER; //need to read up documentation on this....
+        break OUTER;
       }
     }
   }
-  //Don't allow selection if no highlighting:
-  if(!highlighting){
+  if(!highlighting){//If there is no highlighting, player cannot select:
     return;
   }
-  //continue playing if the game is not overflow / switch players
+  //continue playing if the game is not overflow / switch
   if(!gameOver){
+    console.log("begin checking if it is game over");
     playersTurn = !playersTurn;
+    console.log("end checking if it is game over");
   }
 }
 
