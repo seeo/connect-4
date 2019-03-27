@@ -1,6 +1,7 @@
 "use strict"; //trying to debug.. strict mode: we cannot use undeclared variables.
 console.log("Javascript is linked!");
 
+//By convention, MDN recommends constants be ALL CAPS.
 //setting color of board, grid, circles, players' tokens (And experimenting with 'constants')
 const COLOR_BACKGROUND = "#eee"; //this is grey for the canvas.
 const COLOR_COMP = "#f22020"; //this is red
@@ -9,7 +10,6 @@ const COLOR_BOARD = "#fbca70"; //light orange color for the board;
 const COLOR_BOARD_BOTTOM = "#be7b00"; //dark orange color for the bottom of the board;
 const COLOR_PLAY = "#2929e9"; //this is blue
 const COLOR_PLAY_DARK = "#05058c"; //this is dark blue
-//'constant' are variables that will never be re-assigned in future coding. By convention, MDN recommends constants be ALL CAPS.
 
 //game parameters;
 const GRID_CIRCLE = 0.7; //circle diameter within the grids (aka squares) as a fraction of cell length;
@@ -43,16 +43,16 @@ class Cell{ //a class is an idea of a template that can be used to create multip
   //draw circle:
   draw(context){
     //OWNER COLOR;
-    // let color;
-    // if(this.owner == null){
-    //   color = COLOR_BACKGROUND;
-    // }else if(this.owner){
-    //   color  = COLOR_PLAY;
-    // }else{
-    //   color = COLOR_COMP;
-    // }
+    let color;
+    if(this.owner == null){
+      color = COLOR_BACKGROUND;
+    }else if(this.owner){
+      color = COLOR_PLAY;
+    }else{
+      color = COLOR_COMP;
+    }
     // above is the if, else statment to check owner color; below is the tenary operator version:
-    let color = this.owner == null ? COLOR_BACKGROUND : this.owner ? COLOR_PLAY : COLOR_COMP;
+    // let color = this.owner == null ? COLOR_BACKGROUND : this.owner ? COLOR_PLAY : COLOR_COMP;
     //if there is no owner, then the color of cell is the background color, which is the canvas color;
     //else if the this.owner is true, then color of cell is the player's color;
     //else the color of the cell is the computer's color;
@@ -73,7 +73,7 @@ class Cell{ //a class is an idea of a template that can be used to create multip
       // }else{
       //   color = COLOR_COMP;
       // }
-    console.log("Begin drawing of highlighting");
+    //console.log("Begin drawing of highlighting");
     color = this.highlight ? COLOR_PLAY : COLOR_COMP;
     //DRAW HIGHLIGHTING AROUND THE CIRCLE:
     context.lineWidth = (this.r / 4); //this determines how bold the highlight around the circle will be....
@@ -81,7 +81,7 @@ class Cell{ //a class is an idea of a template that can be used to create multip
     context.beginPath();
     context.arc(this.centerX, this.centerY, this.r, 0, Math.PI * 2);
     context.stroke();
-    console.log("End drawing of highlighting");
+    //console.log("End drawing of highlighting");
     }
   }
 }
@@ -96,7 +96,7 @@ var margin;
 
 //game variables here:
 var grid = []; //empty array for now;
-var gameOver = new Boolean();
+var gameOver = new Boolean(); //explicitly set the variable to be a true or false
 var playersTurn = new Boolean(); //this can return either true or false based on newGame function that randomly chooses who gets to go first.
 setDimensions(); //will create the dimensions of the canvas later to explicitly take up the height and width of the browser
 
@@ -110,7 +110,7 @@ var timeDelta; //to keep track of the time , i.e. time between frames;
 var timeLast; // and to keep track of the last frame time;
 requestAnimationFrame(loop);
 
-function loop (timeNow){
+function loop (timeNow){ //the requestAnimationFrame is going through a recursive loop at 60FPS.
   //initialise timeLast
   if(!timeLast){ //timeLast is null or undefined, then...
     timeLast = timeNow; //this will only run once.
@@ -138,7 +138,7 @@ function click(event){
     return;
   }
   if(playersTurn == false){
-    //if not player's turn, player should not be able to click...
+    //REMOVED return here. if not player's turn, player should not be able to click...
   }
   selectCell();
 }
@@ -177,12 +177,10 @@ function createBoard(){
         // cell: height of each cell;
         // i : row number (for calculating position later- esp. for designing the Win conditions);
         // j: column number (");
-        grid[i][j] = new Cell (left, top, cell, cell, i, j);
+        grid[i][j] = new Cell (left, top, cell, cell, i, j);//every cell created goes into constructor function so that we can repeated create Cell objects with key-value pairs.
       }
     }
 }
-
-
 
 function drawBackground(){
   context.fillStyle = COLOR_BACKGROUND; //background of the connect 4 board;
@@ -191,7 +189,7 @@ function drawBackground(){
 
 function drawBoard(){
   //draw the board and bottom of board first (without the circles)
-  let cell = grid [0][0]; // the top left;
+  let cell = grid[0][0]; // the top left;
   let boardHeight = cell.h * GRID_ROWS;
   let boardWidth = cell.w * GRID_COLS;
   context.fillStyle = COLOR_BOARD;
@@ -199,7 +197,7 @@ function drawBoard(){
   context.fillStyle = COLOR_BOARD_BOTTOM;
   context.fillRect(cell.left - (margin/2),cell.top + boardHeight - (margin/2), boardWidth + margin, margin);
 
-  //draw the circles Now:
+  //Draw the Circles Now:
   for (let row of grid){
     for (let cell of row){
       cell.draw(context);
@@ -212,7 +210,7 @@ function highlightCell(x, y){
   for (let row of grid){
     for (let cell of row){
       cell.highlight = null; //clear existing highlightings first
-      if (cell.contains(x, y)){  //get the column;
+      if (cell.contains(x, y)){ //get the column;
         col = cell.col;
       }
     }
@@ -255,7 +253,7 @@ function selectCell(){
         console.log("just before grid[i][j] cell.owner property is assigned to players turn; which will return a color");
         cell.owner = playersTurn;
         console.log("just after cell.owner got re-assigned");
-        if(checkWin(cell.row, cell.col)){
+        if(checkWin(cell.row, cell.col)){ //when player is done selecting a cell, program will check if there is a win anywhere.
             gameOver = true;
         }
         break OUTER;
