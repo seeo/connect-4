@@ -1,10 +1,26 @@
 body{
   margin: 0;
-  overflow: hidden; /* this removes the scroll bar, unfortunately, the replay button has disappeared */
+  /*overflow: hidden;  this removes the scroll bar, unfortunately, the replay button has disappeared */
 }
 
 canvas{
   border: 1px solid black;
   display: block;
   margin: 0 auto; /*we set margin to have auto so that the canvas will be in the center */
+}
+
+#endgame {
+  display: block;
+  width: 200px;
+  top: 155px;
+  background-color: rgba(41, 41,41,0.8);
+  position: absolute;
+  left: 50%;
+  margin-left: -100px;
+  padding-top:50px;
+  padding-bottom: 50px;
+  text-align: center;
+  border-radius: 5px;
+  color: white;
+  font-size: 2em;
 }

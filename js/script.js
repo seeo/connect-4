@@ -167,3 +167,53 @@ console.log(x0y0_yCoordinate);
 console.log(x0y0_xCircle);
 console.log(x0y0_yCircle);
 console.log("Javascript has ended!");
+
+
+function drawText(){
+  let size = grid[0][0].h
+  if (gameOver == false){
+    return; // don't draw anything if game is not over;
+  }
+  //set up text dimensions
+  if(gameDraw == true){
+    context.fillStyle = COLOR_DRAW;
+    if(playersTurn == true){
+      context.fillStyle = COLOR_PLAY;
+      context.font = size + "sans-serif"
+      context.lineJoin = "round"
+      context.lineWidth = size / 10;
+      context.strokeStyle = COLOR_PLAY_DARK;
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+    }else{
+      context.fillStyle = COLOR_COMP;
+      context.font = size + "sans-serif"
+      context.lineJoin = "round"
+      context.lineWidth = size / 10;
+      context.strokeStyle = COLOR_COMP_DARK;
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      }
+    }
+    //draw the text
+    let text;
+    let offset = size * 0.55;
+    if (gameDraw == true){
+      text = TEXT_DRAW;
+      context.strokeText(text, width/2, height/2);
+      context.fillText(text, width/2, height/2);
+      if(playersTurn == true){
+       text = TEXT_PLAY;
+       context.strokeText(text, width/2, height/2-offset);
+       context.fillText(text, width/2, height/2-offset);
+       context.strokeText(TEXT_WIN, width/2,height/2+offset);
+       context.fillText(TEXT_WIN, width/2,height/2+offset);
+      }else{
+       text = TEXT_COMP;
+       context.strokeText(text, width/2, height/2-offset);
+       context.fillText(text, width/2, height/2-offset);
+       context.strokeText(TEXT_WIN, width/2,height/2+offset);
+       context.fillText(TEXT_WIN, width/2,height/2+offset);
+      }
+    }
+}
