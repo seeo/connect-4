@@ -35,6 +35,7 @@ class Cell{ //a class is an idea of a template that can be used to create multip
     this.r = w * GRID_CIRCLE / 2; // diameter of circle is a fraction of the cell width, radius is half of diameter;
     this.highlight = null; //all circles begin with no highlight, until cursor moves to cell, then highlightCell function event listener activates;
     this.owner = null; // when true -> player; when false -> computer
+    this.winner = false; //every circle drawn begins with a winner value of false;
   }
   //create this contains method so that we can use it for our highlightCell later below
   contains(x, y){
@@ -127,8 +128,13 @@ function loop (timeNow){ //the requestAnimationFrame is going through a recursiv
   requestAnimationFrame(loop);
 }
 
-function checkWin(row, col){
-  //come back later to do checkwin conditional
+function checkWin(row, col){ //this function takes in the cell.row and cell.col property values when the loop begins
+  // checkWin function will do a couple of things, all within itself:
+  //First it will generate four arrays, representing the four different ways a win can be made:
+  // i) vertical, ii) horizontal, iii) diagonalLeft(top Left to Bottom Right), and the iv) other diagonalRight (top Right to bottom Left);
+  
+
+
   return false; //for now...
 }
 
@@ -189,7 +195,7 @@ function drawBackground(){
 
 function drawBoard(){
   //draw the board and bottom of board first (without the circles)
-  let cell = grid[0][0]; // the top left;
+  let cell = grid[0][0]; // the top left;-=
   let boardHeight = cell.h * GRID_ROWS;
   let boardWidth = cell.w * GRID_COLS;
   context.fillStyle = COLOR_BOARD;
@@ -197,7 +203,7 @@ function drawBoard(){
   context.fillStyle = COLOR_BOARD_BOTTOM;
   context.fillRect(cell.left - (margin/2),cell.top + boardHeight - (margin/2), boardWidth + margin, margin);
 
-  //Draw the Circles Now:
+  //Draw  circles onto each grid[i][j]:
   for (let row of grid){
     for (let cell of row){
       cell.draw(context);
