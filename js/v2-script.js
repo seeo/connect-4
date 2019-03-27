@@ -128,14 +128,55 @@ function loop (timeNow){ //the requestAnimationFrame is going through a recursiv
   requestAnimationFrame(loop);
 }
 
+let vertical = []; // declare en empty array to store cells that are in the vertical column
+let horizontal = []; // declare an empty array to store cells that are in the horizontal row
+let diagonalLeft = []; // declare an empty array to store cells that are in the diagonal from top left to bottom right
+let diagonalRight = []; // declare an empty array to store cells that are in the diagonal from the top right to botom left
+
 function checkWin(row, col){ //this function takes in the cell.row and cell.col property values when the loop begins
   // checkWin function will do a couple of things, all within itself:
   //First it will generate four arrays, representing the four different ways a win can be made:
   // i) vertical, ii) horizontal, iii) diagonalLeft(top Left to Bottom Right), and the iv) other diagonalRight (top Right to bottom Left);
-  
+  for (let i = 0; i < GRID_ROWS; i++){
+    for (let j =0 ; j < GRID_COLS; j++){
+      if (i == row){
+        horizontal.push(grid[i][j]);
+      }
+      if (j == col){
+        vertical.push(grid[i][j]);
+      }
+      if (i + j == row + col){
+        diagonalRight.push(grid[i][j]);
+      }
+      if(i - j == row - col){
+        diagonalLeft.push(grid[i][j]);
+      }
+    }
+  }//if there are any from the above arrays that satisfy 4 in a row condition, then program should return one of them
+    return connect4(horizontal) || connect4(vertical)|| connect4(diagonalLeft)|| connect4(diagonalRight);
+}
 
+let cells = []; //declare an empty array here for use inside the connect4 function.
+function connect4(cells){ //this function is called within the checkWin function... its argument will be an array
+  let count = 0;//will count number of consecutive same cell ownerships with this.
+  let lastOwner = null;
+  let winningCells = [];
+    for(let i=0; i<cells.length; i++){
+      if(cells[i].owner == null){ //if a cell has no owner (aka it is unfilled, then no count
+        count = 0;
+      }
+      else if (cells[i].owner == lastOwner){//if the current cell owner is the same as the last cell owner, we increase count by 1
+        winningCells.push(cells[i]);
+        count++;
+      }
+      else { //the third case is where there is a change in ownership, if that is the case, reset the winningCell array and start count at 1;
+        winningCells = [];
+        count = 1;
+        winningCells.push(cells[i]);
+      }
+      lastOwner = cells[i].owner; //sets the last owner to be the current cell, before new loops begins. 
+    }
 
-  return false; //for now...
 }
 
 function click(event){
@@ -260,9 +301,8 @@ function selectCell(){
         cell.owner = playersTurn;
         console.log("just after cell.owner got re-assigned");
         if(checkWin(cell.row, cell.col)){ //when player is done selecting a cell, program will check if there is a win anywhere.
-            gameOver = true;
+            gameOver = false;
         }
-        break OUTER;
       }
     }
   }
